@@ -1,7 +1,7 @@
 import { connectDB } from "@/lib/db";
 import Attendance from "@/models/Attendance";
 import { getServerSession } from "next-auth";
-import { authOptions } from "@/app/api/auth/[...nextauth]/route";
+import { authOptions } from "@/lib/authOption";
 
 export async function GET(req: Request) {
   try {
@@ -16,7 +16,8 @@ export async function GET(req: Request) {
     const { searchParams } = new URL(req.url);
     const date = searchParams.get("date");
 
-    let filter: any = {};
+    // ✅ Properly typed filter
+    const filter: { date?: string } = {};
 
     if (date) {
       filter.date = date;
@@ -27,7 +28,12 @@ export async function GET(req: Request) {
       .sort({ createdAt: -1 });
 
     return Response.json(data);
-  } catch (err: any) {
-    return Response.json({ error: err.message }, { status: 500 });
+  } catch (err: unknown) {
+    // ✅ Safe error handling
+    if (err instanceof Error) {
+      return Response.json({ error: err.message }, { status: 500 });
+    }
+
+    return Response.json({ error: "Something went wrong" }, { status: 500 });
   }
 }

@@ -29,6 +29,8 @@ export default function HomeasyMarkAttendance() {
       setIsCameraOn(true);
       setCapturedImage(null);
     } catch (err) {
+      
+      console.error("Error accessing camera:", err);
       alert("Unable to access camera. Please check permissions.");
     }
   };
@@ -113,6 +115,8 @@ export default function HomeasyMarkAttendance() {
         }, 2000);
       }
     } catch (err) {
+      console.error("Error marking attendance:", err);
+
       setStatusMessage("Failed to mark attendance. Please try again.");
     } finally {
       setLoading(false);

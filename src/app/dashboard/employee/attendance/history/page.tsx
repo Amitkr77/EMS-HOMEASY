@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { Calendar, Clock, CheckCircle, AlertTriangle } from "lucide-react";
+import { Calendar, Clock } from "lucide-react";
 
 type AttendanceRecord = {
   _id: string;

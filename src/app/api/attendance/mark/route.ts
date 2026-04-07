@@ -44,7 +44,11 @@ export async function POST(req: Request) {
     });
 
     return Response.json(attendance);
-  } catch (err: any) {
-    return Response.json({ error: err.message }, { status: 500 });
+  } catch (err: unknown) {
+    if (err instanceof Error) {
+      return Response.json({ error: err.message }, { status: 500 });
+    }
+
+    return Response.json({ error: "Something went wrong" }, { status: 500 });
   }
 }

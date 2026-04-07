@@ -1,7 +1,15 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { Eye, EyeOff, Plus, Edit2, Trash2, UserCheck, UserX } from "lucide-react";
+import {
+  Eye,
+  EyeOff,
+  Plus,
+  Edit2,
+  Trash2,
+  UserCheck,
+  UserX,
+} from "lucide-react";
 
 type Employee = {
   _id: string;
@@ -36,7 +44,9 @@ export default function HomeasyTeamPage() {
   const [searchQuery, setSearchQuery] = useState("");
 
   const [showCreateForm, setShowCreateForm] = useState(false);
-  const [selectedEmployee, setSelectedEmployee] = useState<Employee | null>(null);
+  const [selectedEmployee, setSelectedEmployee] = useState<Employee | null>(
+    null,
+  );
 
   const [form, setForm] = useState<FormState>({
     name: "",
@@ -47,7 +57,10 @@ export default function HomeasyTeamPage() {
   });
 
   const [showPassword, setShowPassword] = useState(false);
-  const [notification, setNotification] = useState<{ type: "success" | "error"; message: string } | null>(null);
+  const [notification, setNotification] = useState<{
+    type: "success" | "error";
+    message: string;
+  } | null>(null);
 
   const showNotification = (type: "success" | "error", message: string) => {
     setNotification({ type, message });
@@ -78,7 +91,10 @@ export default function HomeasyTeamPage() {
       return showNotification("error", "Please fill all required fields");
     }
     if (form.password.length < 6) {
-      return showNotification("error", "Password must be at least 6 characters");
+      return showNotification(
+        "error",
+        "Password must be at least 6 characters",
+      );
     }
 
     setSubmitting(true);
@@ -96,8 +112,15 @@ export default function HomeasyTeamPage() {
       setShowCreateForm(false);
       resetForm();
       fetchEmployees();
-    } catch (err: any) {
-      showNotification("error", err.message || "Failed to create team member");
+    } catch (err: unknown) {
+      let message = "Failed to create team member";
+
+      if (err instanceof Error) {
+        message = err.message;
+      }
+
+      showNotification("error", message);
+      fetchEmployees();
     } finally {
       setSubmitting(false);
     }
@@ -137,7 +160,8 @@ export default function HomeasyTeamPage() {
   // Toggle Active / Inactive
   const toggleStatus = async (id: string, currentStatus: boolean) => {
     const action = currentStatus ? "deactivate" : "activate";
-    if (!confirm(`Are you sure you want to ${action} this team member?`)) return;
+    if (!confirm(`Are you sure you want to ${action} this team member?`))
+      return;
 
     try {
       await fetch(`/api/employees/${id}`, {
@@ -174,10 +198,11 @@ export default function HomeasyTeamPage() {
     });
   };
 
-  const filteredEmployees = employees.filter((emp) =>
-    emp.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    emp.email.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    emp.role.toLowerCase().includes(searchQuery.toLowerCase())
+  const filteredEmployees = employees.filter(
+    (emp) =>
+      emp.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      emp.email.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      emp.role.toLowerCase().includes(searchQuery.toLowerCase()),
   );
 
   const activeCount = employees.filter((e) => e.isActive).length;
@@ -202,8 +227,12 @@ export default function HomeasyTeamPage() {
             H
           </div>
           <div>
-            <h1 className="text-4xl font-bold text-slate-900 tracking-tight">Homeasy Team</h1>
-            <p className="text-slate-600 mt-1 text-lg">Smart Team. Perfected.</p>
+            <h1 className="text-4xl font-bold text-slate-900 tracking-tight">
+              Homeasy Team
+            </h1>
+            <p className="text-slate-600 mt-1 text-lg">
+              Smart Team. Perfected.
+            </p>
           </div>
         </div>
 
@@ -222,23 +251,35 @@ export default function HomeasyTeamPage() {
       {/* Stats Cards */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-10">
         <div className="bg-white rounded-3xl p-8 shadow-sm border border-slate-100 hover:shadow transition-shadow">
-          <p className="text-sm font-medium text-slate-500 tracking-widest">TOTAL TEAM</p>
-          <p className="text-5xl font-bold text-slate-900 mt-5">{employees.length}</p>
+          <p className="text-sm font-medium text-slate-500 tracking-widest">
+            TOTAL TEAM
+          </p>
+          <p className="text-5xl font-bold text-slate-900 mt-5">
+            {employees.length}
+          </p>
         </div>
         <div className="bg-white rounded-3xl p-8 shadow-sm border border-slate-100 hover:shadow transition-shadow">
-          <p className="text-sm font-medium text-teal-600 tracking-widest">ACTIVE MEMBERS</p>
+          <p className="text-sm font-medium text-teal-600 tracking-widest">
+            ACTIVE MEMBERS
+          </p>
           <p className="text-5xl font-bold text-teal-600 mt-5">{activeCount}</p>
         </div>
         <div className="bg-white rounded-3xl p-8 shadow-sm border border-slate-100 hover:shadow transition-shadow">
-          <p className="text-sm font-medium text-red-600 tracking-widest">INACTIVE</p>
-          <p className="text-5xl font-bold text-red-600 mt-5">{employees.length - activeCount}</p>
+          <p className="text-sm font-medium text-red-600 tracking-widest">
+            INACTIVE
+          </p>
+          <p className="text-5xl font-bold text-red-600 mt-5">
+            {employees.length - activeCount}
+          </p>
         </div>
       </div>
 
       {/* Search Bar */}
       <div className="mb-8">
         <div className="relative max-w-md">
-          <div className="absolute left-5 top-1/2 -translate-y-1/2 text-slate-400">🔍</div>
+          <div className="absolute left-5 top-1/2 -translate-y-1/2 text-slate-400">
+            🔍
+          </div>
           <input
             type="text"
             placeholder="Search by name, email or role..."
@@ -261,9 +302,13 @@ export default function HomeasyTeamPage() {
           <div className="mx-auto w-28 h-28 bg-teal-100 rounded-full flex items-center justify-center mb-6 text-5xl">
             👷‍♂️
           </div>
-          <h3 className="text-2xl font-semibold text-slate-700">No team members found</h3>
+          <h3 className="text-2xl font-semibold text-slate-700">
+            No team members found
+          </h3>
           <p className="text-slate-500 mt-3 max-w-sm mx-auto">
-            {searchQuery ? "Try a different search term" : "Add your first Homeasy team member to get started"}
+            {searchQuery
+              ? "Try a different search term"
+              : "Add your first Homeasy team member to get started"}
           </p>
         </div>
       ) : (
@@ -271,23 +316,40 @@ export default function HomeasyTeamPage() {
           <table className="w-full">
             <thead>
               <tr className="border-b border-slate-100 bg-slate-50">
-                <th className="px-8 py-6 text-left font-semibold text-slate-600">Team Member</th>
-                <th className="px-6 py-6 text-left font-semibold text-slate-600">Email</th>
-                <th className="px-6 py-6 text-left font-semibold text-slate-600">Role</th>
-                <th className="px-6 py-6 text-left font-semibold text-slate-600">Base Salary</th>
-                <th className="px-6 py-6 text-center font-semibold text-slate-600">Status</th>
-                <th className="px-8 py-6 text-right font-semibold text-slate-600">Actions</th>
+                <th className="px-8 py-6 text-left font-semibold text-slate-600">
+                  Team Member
+                </th>
+                <th className="px-6 py-6 text-left font-semibold text-slate-600">
+                  Email
+                </th>
+                <th className="px-6 py-6 text-left font-semibold text-slate-600">
+                  Role
+                </th>
+                <th className="px-6 py-6 text-left font-semibold text-slate-600">
+                  Base Salary
+                </th>
+                <th className="px-6 py-6 text-center font-semibold text-slate-600">
+                  Status
+                </th>
+                <th className="px-8 py-6 text-right font-semibold text-slate-600">
+                  Actions
+                </th>
               </tr>
             </thead>
             <tbody className="divide-y divide-slate-100">
               {filteredEmployees.map((emp) => (
-                <tr key={emp._id} className="hover:bg-slate-50 transition-colors group">
+                <tr
+                  key={emp._id}
+                  className="hover:bg-slate-50 transition-colors group"
+                >
                   <td className="px-8 py-6">
                     <div className="flex items-center gap-4">
                       <div className="w-12 h-12 bg-gradient-to-br from-teal-400 to-cyan-500 rounded-3xl flex items-center justify-center text-white font-bold text-xl shadow-inner">
                         {emp.name.charAt(0).toUpperCase()}
                       </div>
-                      <div className="font-semibold text-slate-900 text-lg">{emp.name}</div>
+                      <div className="font-semibold text-slate-900 text-lg">
+                        {emp.name}
+                      </div>
                     </div>
                   </td>
                   <td className="px-6 py-6 text-slate-600">{emp.email}</td>
@@ -308,7 +370,11 @@ export default function HomeasyTeamPage() {
                           : "bg-red-100 text-red-700 hover:bg-red-200"
                       }`}
                     >
-                      {emp.isActive ? <UserCheck className="w-4 h-4" /> : <UserX className="w-4 h-4" />}
+                      {emp.isActive ? (
+                        <UserCheck className="w-4 h-4" />
+                      ) : (
+                        <UserX className="w-4 h-4" />
+                      )}
                       {emp.isActive ? "Active" : "Inactive"}
                     </button>
                   </td>
@@ -344,8 +410,12 @@ export default function HomeasyTeamPage() {
             <div className="p-8">
               <div className="flex justify-between items-start mb-8">
                 <div>
-                  <h2 className="text-3xl font-bold text-slate-900">Add Team Member</h2>
-                  <p className="text-slate-500 mt-1">Join the Homeasy smart team</p>
+                  <h2 className="text-3xl font-bold text-slate-900">
+                    Add Team Member
+                  </h2>
+                  <p className="text-slate-500 mt-1">
+                    Join the Homeasy smart team
+                  </p>
                 </div>
                 <button
                   onClick={() => setShowCreateForm(false)}
@@ -357,7 +427,9 @@ export default function HomeasyTeamPage() {
 
               <div className="space-y-6">
                 <div>
-                  <label className="block text-sm font-medium text-slate-700 mb-2">Full Name</label>
+                  <label className="block text-sm font-medium text-slate-700 mb-2">
+                    Full Name
+                  </label>
                   <input
                     type="text"
                     className="w-full px-5 py-4 border border-slate-200 rounded-3xl focus:outline-none focus:border-teal-500"
@@ -368,18 +440,24 @@ export default function HomeasyTeamPage() {
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-slate-700 mb-2">Email Address</label>
+                  <label className="block text-sm font-medium text-slate-700 mb-2">
+                    Email Address
+                  </label>
                   <input
                     type="email"
                     className="w-full px-5 py-4 border border-slate-200 rounded-3xl focus:outline-none focus:border-teal-500"
                     placeholder="amit@homeasy.io"
                     value={form.email}
-                    onChange={(e) => setForm({ ...form, email: e.target.value })}
+                    onChange={(e) =>
+                      setForm({ ...form, email: e.target.value })
+                    }
                   />
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-slate-700 mb-2">Role</label>
+                  <label className="block text-sm font-medium text-slate-700 mb-2">
+                    Role
+                  </label>
                   <select
                     className="w-full px-5 py-4 border border-slate-200 rounded-3xl focus:outline-none focus:border-teal-500"
                     value={form.role}
@@ -394,14 +472,18 @@ export default function HomeasyTeamPage() {
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-slate-700 mb-2">Password</label>
+                  <label className="block text-sm font-medium text-slate-700 mb-2">
+                    Password
+                  </label>
                   <div className="relative">
                     <input
                       type={showPassword ? "text" : "password"}
                       className="w-full px-5 py-4 border border-slate-200 rounded-3xl focus:outline-none focus:border-teal-500 pr-12"
                       placeholder="Create secure password"
                       value={form.password}
-                      onChange={(e) => setForm({ ...form, password: e.target.value })}
+                      onChange={(e) =>
+                        setForm({ ...form, password: e.target.value })
+                      }
                     />
                     <button
                       type="button"
@@ -414,13 +496,20 @@ export default function HomeasyTeamPage() {
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-slate-700 mb-2">Base Salary (₹)</label>
+                  <label className="block text-sm font-medium text-slate-700 mb-2">
+                    Base Salary (₹)
+                  </label>
                   <input
                     type="number"
                     className="w-full px-5 py-4 border border-slate-200 rounded-3xl focus:outline-none focus:border-teal-500"
                     placeholder="45000"
                     value={form.baseSalary || ""}
-                    onChange={(e) => setForm({ ...form, baseSalary: Number(e.target.value) || 0 })}
+                    onChange={(e) =>
+                      setForm({
+                        ...form,
+                        baseSalary: Number(e.target.value) || 0,
+                      })
+                    }
                   />
                 </div>
               </div>
@@ -450,11 +539,15 @@ export default function HomeasyTeamPage() {
         <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 p-4">
           <div className="bg-white rounded-3xl w-full max-w-lg shadow-2xl">
             <div className="p-8">
-              <h2 className="text-3xl font-bold text-slate-900 mb-8">Edit Team Member</h2>
+              <h2 className="text-3xl font-bold text-slate-900 mb-8">
+                Edit Team Member
+              </h2>
 
               <div className="space-y-6">
                 <div>
-                  <label className="block text-sm font-medium text-slate-700 mb-2">Full Name</label>
+                  <label className="block text-sm font-medium text-slate-700 mb-2">
+                    Full Name
+                  </label>
                   <input
                     type="text"
                     className="w-full px-5 py-4 border border-slate-200 rounded-3xl focus:outline-none focus:border-teal-500"
@@ -464,17 +557,23 @@ export default function HomeasyTeamPage() {
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-slate-700 mb-2">Email</label>
+                  <label className="block text-sm font-medium text-slate-700 mb-2">
+                    Email
+                  </label>
                   <input
                     type="email"
                     className="w-full px-5 py-4 border border-slate-200 rounded-3xl focus:outline-none focus:border-teal-500"
                     value={form.email}
-                    onChange={(e) => setForm({ ...form, email: e.target.value })}
+                    onChange={(e) =>
+                      setForm({ ...form, email: e.target.value })
+                    }
                   />
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-slate-700 mb-2">Role</label>
+                  <label className="block text-sm font-medium text-slate-700 mb-2">
+                    Role
+                  </label>
                   <select
                     className="w-full px-5 py-4 border border-slate-200 rounded-3xl focus:outline-none focus:border-teal-500"
                     value={form.role}
@@ -489,25 +588,37 @@ export default function HomeasyTeamPage() {
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-slate-700 mb-2">Base Salary (₹)</label>
+                  <label className="block text-sm font-medium text-slate-700 mb-2">
+                    Base Salary (₹)
+                  </label>
                   <input
                     type="number"
                     className="w-full px-5 py-4 border border-slate-200 rounded-3xl focus:outline-none focus:border-teal-500"
                     value={form.baseSalary}
-                    onChange={(e) => setForm({ ...form, baseSalary: Number(e.target.value) || 0 })}
+                    onChange={(e) =>
+                      setForm({
+                        ...form,
+                        baseSalary: Number(e.target.value) || 0,
+                      })
+                    }
                   />
                 </div>
 
                 <div>
                   <label className="block text-sm font-medium text-slate-700 mb-2">
-                    New Password <span className="text-xs text-slate-400">(leave blank to keep current)</span>
+                    New Password{" "}
+                    <span className="text-xs text-slate-400">
+                      (leave blank to keep current)
+                    </span>
                   </label>
                   <input
                     type="password"
                     className="w-full px-5 py-4 border border-slate-200 rounded-3xl focus:outline-none focus:border-teal-500"
                     placeholder="Enter new password"
                     value={form.password}
-                    onChange={(e) => setForm({ ...form, password: e.target.value })}
+                    onChange={(e) =>
+                      setForm({ ...form, password: e.target.value })
+                    }
                   />
                 </div>
               </div>

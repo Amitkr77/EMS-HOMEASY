@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { Send, Bell, Mail, X } from "lucide-react";
+import { Send, Bell, Mail } from "lucide-react";
 
 export default function HomeasyAdminNotice() {
     const [form, setForm] = useState({

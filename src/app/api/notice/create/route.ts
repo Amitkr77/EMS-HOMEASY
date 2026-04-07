@@ -3,7 +3,7 @@ import Notice from "@/models/Notice";
 import Employee from "@/models/Employee";
 import { transporter } from "@/lib/mailer";
 import { getServerSession } from "next-auth";
-import { authOptions } from "../../auth/[...nextauth]/route";
+import { authOptions } from "@/lib/authOption";
 
 export async function POST(req: Request) {
     try {
@@ -39,7 +39,10 @@ export async function POST(req: Request) {
         }
 
         return Response.json(notice);
-    } catch (err: any) {
-        return Response.json({ error: err.message }, { status: 500 });
+    } catch (err: unknown) {
+    if (err instanceof Error) {
+      return Response.json({ error: err.message }, { status: 401 });
     }
+    return Response.json({ error: "Something went wrong" }, { status: 401 });
+  }
 }

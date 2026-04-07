@@ -5,7 +5,7 @@ import { requireAdmin } from "@/lib/auth";
 
 export async function GET(
   req: Request,
-  { params }: { params: { id: string } }
+  { params }: { params: { id: string } },
 ) {
   try {
     await requireAdmin();
@@ -20,14 +20,17 @@ export async function GET(
     }
 
     return Response.json(employee);
-  } catch (err: any) {
-    return Response.json({ error: err.message }, { status: 401 });
+  } catch (err: unknown) {
+    if (err instanceof Error) {
+      return Response.json({ error: err.message }, { status: 401 });
+    }
+    return Response.json({ error: "Something went wrong" }, { status: 401 });
   }
 }
 
 export async function PUT(
   req: Request,
-  { params }: { params: { id: string } }
+  { params }: { params: { id: string } },
 ) {
   try {
     await requireAdmin();
@@ -39,21 +42,23 @@ export async function PUT(
       body.password = await bcrypt.hash(body.password, 10);
     }
 
-    const updated = await Employee.findByIdAndUpdate(
-      params.id,
-      body,
-      { new: true }
-    ).select("-password");
+    const updated = await Employee.findByIdAndUpdate(params.id, body, {
+      new: true,
+    }).select("-password");
 
     return Response.json(updated);
-  } catch (err: any) {
-    return Response.json({ error: err.message }, { status: 500 });
+  } catch (err: unknown) {
+    if (err instanceof Error) {
+      return Response.json({ error: err.message }, { status: 500 });
+    }
+
+    return Response.json({ error: "Something went wrong" }, { status: 500 });
   }
 }
 
 export async function DELETE(
   req: Request,
-  { params }: { params: { id: string } }
+  { params }: { params: { id: string } },
 ) {
   try {
     await requireAdmin();
@@ -65,7 +70,11 @@ export async function DELETE(
     });
 
     return Response.json({ message: "Employee deactivated" });
-  } catch (err: any) {
-    return Response.json({ error: err.message }, { status: 500 });
+  } catch (err: unknown) {
+    if (err instanceof Error) {
+      return Response.json({ error: err.message }, { status: 500 });
+    }
+
+    return Response.json({ error: "Something went wrong" }, { status: 500 });
   }
 }

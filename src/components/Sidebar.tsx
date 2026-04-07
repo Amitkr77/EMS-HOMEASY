@@ -75,6 +75,11 @@ export default function HomeasySidebar() {
           label: "Apply Leave",
           icon: <Clock className="w-5 h-5" />,
         },
+        {
+          href: "/dashboard/employee/notices",
+          label: "Notices",
+          icon: <Bell className="w-5 h-5" />,
+        },
       ];
 
   const isActive = (href: string) => {

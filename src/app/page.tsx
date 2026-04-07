@@ -10,6 +10,11 @@ export default function Home() {
   const router = useRouter();
 
   useEffect(() => {
+
+    if (status === "authenticated" && session?.user) {
+      console.log(session.user);
+    }
+    
     if (status === "authenticated") {
       router.push("/dashboard");
     } else if (status === "unauthenticated") {
@@ -31,7 +36,9 @@ export default function Home() {
 
           <div className="flex items-center justify-center gap-3 mb-6">
             <Loader2 className="w-6 h-6 text-teal-400 animate-spin" />
-            <span className="text-slate-400 font-medium">Connecting to Homeasy...</span>
+            <span className="text-slate-400 font-medium">
+              Connecting to Homeasy...
+            </span>
           </div>
 
           <p className="text-xs text-slate-500">Smart Living • Perfected</p>
@@ -48,14 +55,25 @@ export default function Home() {
           H
         </div>
 
-        <h1 className="text-2xl font-semibold text-white mb-2">Homeasy Portal</h1>
+        <h1 className="text-2xl font-semibold text-white mb-2">
+          Homeasy Portal
+        </h1>
         <p className="text-slate-400 mb-8">Redirecting you securely...</p>
 
         <div className="flex justify-center">
           <div className="flex gap-2">
-            <div className="w-3 h-3 bg-teal-400 rounded-full animate-bounce" style={{ animationDelay: "0ms" }} />
-            <div className="w-3 h-3 bg-teal-400 rounded-full animate-bounce" style={{ animationDelay: "150ms" }} />
-            <div className="w-3 h-3 bg-teal-400 rounded-full animate-bounce" style={{ animationDelay: "300ms" }} />
+            <div
+              className="w-3 h-3 bg-teal-400 rounded-full animate-bounce"
+              style={{ animationDelay: "0ms" }}
+            />
+            <div
+              className="w-3 h-3 bg-teal-400 rounded-full animate-bounce"
+              style={{ animationDelay: "150ms" }}
+            />
+            <div
+              className="w-3 h-3 bg-teal-400 rounded-full animate-bounce"
+              style={{ animationDelay: "300ms" }}
+            />
           </div>
         </div>
       </div>

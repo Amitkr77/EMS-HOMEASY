@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { Calendar, Clock, CheckCircle, XCircle, AlertTriangle } from "lucide-react";
+import { Calendar , CheckCircle, XCircle, AlertTriangle } from "lucide-react";
 
 type LeaveRecord = {
   _id: string;

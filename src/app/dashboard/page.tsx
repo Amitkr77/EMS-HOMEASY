@@ -2,7 +2,7 @@
 
 import { useSession } from "next-auth/react";
 import Link from "next/link";
-import { Users, Calendar, Clock, ArrowRight, TrendingUp, Home } from "lucide-react";
+import { Users, Calendar, Clock, ArrowRight, TrendingUp } from "lucide-react";
 
 export default function HomeasyDashboard() {
   const { data: session, status } = useSession();

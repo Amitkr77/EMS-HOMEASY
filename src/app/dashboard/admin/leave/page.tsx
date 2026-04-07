@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { CheckCircle, XCircle, Calendar, User, Clock } from "lucide-react";
+import { CheckCircle, XCircle, Calendar} from "lucide-react";
 
 type LeaveRequest = {
   _id: string;

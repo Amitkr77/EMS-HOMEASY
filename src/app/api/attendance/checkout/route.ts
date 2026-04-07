@@ -55,7 +55,11 @@ export async function POST(req: Request) {
     await record.save();
 
     return Response.json(record);
-  } catch (err: any) {
-    return Response.json({ error: err.message }, { status: 500 });
+  } catch (err: unknown) {
+    if (err instanceof Error) {
+      return Response.json({ error: err.message }, { status: 500 });
+    }
+
+    return Response.json({ error: "Something went wrong" }, { status: 500 });
   }
 }

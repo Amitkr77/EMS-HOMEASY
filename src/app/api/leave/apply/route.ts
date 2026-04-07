@@ -1,7 +1,7 @@
 import { connectDB } from "@/lib/db";
 import Leave from "@/models/Leave";
 import { getServerSession } from "next-auth";
-import { authOptions } from "../../auth/[...nextauth]/route";
+import { authOptions } from "@/lib/authOption";
 
 function calculateDays(start: string, end: string) {
     const s = new Date(start);
@@ -33,7 +33,10 @@ export async function POST(req: Request) {
         });
 
         return Response.json(leave);
-    } catch (err: any) {
-        return Response.json({ error: err.message }, { status: 500 });
+    } catch (err: unknown) {
+    if (err instanceof Error) {
+      return Response.json({ error: err.message }, { status: 401 });
     }
+    return Response.json({ error: "Something went wrong" }, { status: 401 });
+  }
 }

@@ -12,16 +12,30 @@ import {
 } from "recharts";
 import { TrendingUp, Clock, Users } from "lucide-react";
 
+interface CustomTooltipProps {
+  active?: boolean;
+  payload?: { value: number; name: string }[];
+  label?: string | number;
+}
+
 type AttendanceRecord = {
   employeeId?: { name: string };
   hoursWorked?: number;
 };
 
+type ChartDataItem = {
+  name: string;
+  hours: number;
+};
+
 export default function HomeasyAnalytics() {
-  const [data, setData] = useState<any[]>([]);
+  const [data, setData] = useState<ChartDataItem[]>([]);
   const [loading, setLoading] = useState(true);
   const [totalHours, setTotalHours] = useState(0);
-  const [topPerformer, setTopPerformer] = useState<{ name: string; hours: number } | null>(null);
+  const [topPerformer, setTopPerformer] = useState<{
+    name: string;
+    hours: number;
+  } | null>(null);
 
   useEffect(() => {
     fetch("/api/attendance/admin")
@@ -54,19 +68,19 @@ export default function HomeasyAnalytics() {
       });
   }, []);
 
-  const CustomTooltip = ({ active, payload, label }: any) => {
-    if (active && payload && payload.length) {
-      return (
-        <div className="bg-white px-4 py-3 rounded-2xl shadow-xl border border-slate-100">
-          <p className="font-semibold text-slate-900">{label}</p>
-          <p className="text-teal-600">
-            <span className="font-medium">{payload[0].value}</span> hours
-          </p>
-        </div>
-      );
-    }
-    return null;
-  };
+ const CustomTooltip: React.FC<CustomTooltipProps> = ({ active, payload, label }) => {
+  if (active && payload && payload.length) {
+    return (
+      <div className="bg-white px-4 py-3 rounded-2xl shadow-xl border border-slate-100">
+        <p className="font-semibold text-slate-900">{label}</p>
+        <p className="text-teal-600">
+          <span className="font-medium">{payload[0].value}</span> hours
+        </p>
+      </div>
+    );
+  }
+  return null;
+};
 
   return (
     <div className="min-h-screen bg-slate-50 p-6 md:p-8 font-sans">
@@ -77,8 +91,12 @@ export default function HomeasyAnalytics() {
             H
           </div>
           <div>
-            <h1 className="text-4xl font-bold text-slate-900 tracking-tight">Analytics</h1>
-            <p className="text-slate-600 mt-1 text-lg">Smart Team Performance • Real-time Insights</p>
+            <h1 className="text-4xl font-bold text-slate-900 tracking-tight">
+              Analytics
+            </h1>
+            <p className="text-slate-600 mt-1 text-lg">
+              Smart Team Performance • Real-time Insights
+            </p>
           </div>
         </div>
       </div>
@@ -88,8 +106,12 @@ export default function HomeasyAnalytics() {
         <div className="bg-white rounded-3xl p-8 shadow-sm border border-slate-100">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-sm font-medium text-slate-500 tracking-widest">TOTAL HOURS</p>
-              <p className="text-5xl font-bold text-slate-900 mt-4">{totalHours}</p>
+              <p className="text-sm font-medium text-slate-500 tracking-widest">
+                TOTAL HOURS
+              </p>
+              <p className="text-5xl font-bold text-slate-900 mt-4">
+                {totalHours}
+              </p>
             </div>
             <div className="w-14 h-14 bg-teal-100 rounded-2xl flex items-center justify-center">
               <Clock className="w-8 h-8 text-teal-600" />
@@ -100,8 +122,12 @@ export default function HomeasyAnalytics() {
         <div className="bg-white rounded-3xl p-8 shadow-sm border border-slate-100">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-sm font-medium text-slate-500 tracking-widest">TEAM MEMBERS</p>
-              <p className="text-5xl font-bold text-slate-900 mt-4">{data.length}</p>
+              <p className="text-sm font-medium text-slate-500 tracking-widest">
+                TEAM MEMBERS
+              </p>
+              <p className="text-5xl font-bold text-slate-900 mt-4">
+                {data.length}
+              </p>
             </div>
             <div className="w-14 h-14 bg-cyan-100 rounded-2xl flex items-center justify-center">
               <Users className="w-8 h-8 text-cyan-600" />
@@ -116,7 +142,9 @@ export default function HomeasyAnalytics() {
                 <p className="text-sm font-medium text-emerald-600 tracking-widest flex items-center gap-2">
                   <TrendingUp className="w-4 h-4" /> TOP PERFORMER
                 </p>
-                <p className="text-5xl font-bold text-slate-900 mt-4">{topPerformer.name}</p>
+                <p className="text-5xl font-bold text-slate-900 mt-4">
+                  {topPerformer.name}
+                </p>
                 <p className="text-teal-600 mt-1">{topPerformer.hours} hours</p>
               </div>
               <div className="text-4xl">🏆</div>
@@ -129,8 +157,12 @@ export default function HomeasyAnalytics() {
       <div className="bg-white rounded-3xl shadow-sm border border-slate-100 p-8">
         <div className="flex items-center justify-between mb-8">
           <div>
-            <h2 className="text-2xl font-semibold text-slate-900">Hours Worked by Team Member</h2>
-            <p className="text-slate-500 mt-1">This month • Attendance Analytics</p>
+            <h2 className="text-2xl font-semibold text-slate-900">
+              Hours Worked by Team Member
+            </h2>
+            <p className="text-slate-500 mt-1">
+              This month • Attendance Analytics
+            </p>
           </div>
         </div>
 
@@ -146,7 +178,10 @@ export default function HomeasyAnalytics() {
         ) : (
           <div className="h-[420px] w-full">
             <ResponsiveContainer width="100%" height="100%">
-              <BarChart data={data} margin={{ top: 20, right: 30, left: 20, bottom: 60 }}>
+              <BarChart
+                data={data}
+                margin={{ top: 20, right: 30, left: 20, bottom: 60 }}
+              >
                 <CartesianGrid strokeDasharray="3 3" stroke="#f1f5f9" />
                 <XAxis
                   dataKey="name"

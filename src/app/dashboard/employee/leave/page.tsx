@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { Calendar, Clock, Send, ArrowLeft } from "lucide-react";
+import { Clock, Send } from "lucide-react";
 
 export default function HomeasyApplyLeave() {
   const [form, setForm] = useState({

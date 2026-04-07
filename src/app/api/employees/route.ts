@@ -13,8 +13,11 @@ export async function GET() {
       .populate("department");
 
     return Response.json(employees);
-  } catch (err: any) {
-    return Response.json({ error: err.message }, { status: 401 });
+  } catch (err: unknown) {
+    if (err instanceof Error) {
+      return Response.json({ error: err.message }, { status: 401 });
+    }
+    return Response.json({ error: "Something went wrong" }, { status: 401 });
   }
 }
 
@@ -43,7 +46,11 @@ export async function POST(req: Request) {
     });
 
     return Response.json(employee);
-  } catch (err: any) {
-    return Response.json({ error: err.message }, { status: 500 });
+  } catch (err: unknown) {
+    if (err instanceof Error) {
+      return Response.json({ error: err.message }, { status: 500 });
+    }
+
+    return Response.json({ error: "Something went wrong" }, { status: 500 });
   }
 }
