@@ -11,11 +11,11 @@ export async function GET() {
     return Response.json({ message: "Admin already exists" });
   }
 
-  const hashed = await bcrypt.hash("123456", 10);
+  const hashed = await bcrypt.hash("home@1234", 10);
 
   await Employee.create({
     name: "Admin",
-    email: "admin@test.com",
+    email: "admin@homeasy.io",
     password: hashed,
     role: "admin",
     baseSalary: 50000,
