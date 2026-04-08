@@ -15,9 +15,9 @@ type Employee = {
   _id: string;
   name: string;
   email: string;
-  role: string;
   baseSalary: number;
   isActive: boolean;
+  role: string;
 };
 
 type FormState = {
@@ -25,7 +25,6 @@ type FormState = {
   email: string;
   password: string;
   baseSalary: number;
-  role: string;
 };
 
 export default function HomeasyTeamPage() {
@@ -44,7 +43,6 @@ export default function HomeasyTeamPage() {
     email: "",
     password: "",
     baseSalary: 0,
-    role: "Technician",
   });
 
   const [showPassword, setShowPassword] = useState(false);
@@ -60,6 +58,7 @@ export default function HomeasyTeamPage() {
 
   // Fetch team members
   const fetchEmployees = async () => {
+    setLoading(true);
     try {
       const res = await fetch("/api/employees");
       if (!res.ok) throw new Error("Failed to fetch");
@@ -78,7 +77,7 @@ export default function HomeasyTeamPage() {
 
   // Create new team member
   const handleCreate = async () => {
-    if (!form.name || !form.email || !form.password || !form.role) {
+    if (!form.name || !form.email || !form.password) {
       return showNotification("error", "Please fill all required fields");
     }
     if (form.password.length < 6) {
@@ -130,7 +129,6 @@ export default function HomeasyTeamPage() {
           name: form.name,
           email: form.email,
           baseSalary: form.baseSalary,
-          role: form.role,
           ...(form.password && { password: form.password }),
         }),
       });
@@ -155,11 +153,13 @@ export default function HomeasyTeamPage() {
       return;
 
     try {
-      await fetch(`/api/employees/${id}`, {
+      const res = await fetch(`/api/employees/${id}`, {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ isActive: !currentStatus }),
       });
+
+      if (!res.ok) throw new Error();
       showNotification("success", `Team member ${action}d successfully`);
       fetchEmployees();
     } catch {
@@ -173,7 +173,6 @@ export default function HomeasyTeamPage() {
       email: "",
       password: "",
       baseSalary: 0,
-      role: "Technician",
     });
     setShowPassword(false);
   };
@@ -185,7 +184,6 @@ export default function HomeasyTeamPage() {
       email: emp.email,
       password: "",
       baseSalary: emp.baseSalary,
-      role: emp.role,
     });
   };
 
@@ -273,7 +271,7 @@ export default function HomeasyTeamPage() {
           </div>
           <input
             type="text"
-            placeholder="Search by name, email or role..."
+            placeholder="Search by name or email "
             className="w-full pl-14 pr-5 py-4 bg-white border border-slate-200 rounded-3xl focus:outline-none focus:border-teal-500 transition-all text-base"
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
@@ -383,7 +381,8 @@ export default function HomeasyTeamPage() {
                         className="p-3 hover:bg-red-50 rounded-2xl transition-colors"
                         title="Change Status"
                       >
-                        <Trash2 className="w-5 h-5 text-red-500" />
+                        <UserX className="w-5 h-5 text-red-500" />
+                        {/* <Trash2 className="w-5 h-5 text-red-500" /> */}
                       </button>
                     </div>
                   </td>
@@ -477,7 +476,7 @@ export default function HomeasyTeamPage() {
                     type="number"
                     className="w-full px-5 py-4 border border-slate-200 rounded-3xl focus:outline-none focus:border-teal-500"
                     placeholder="45000"
-                    value={form.baseSalary || ""}
+                    value={form.baseSalary === 0 ? "" : form.baseSalary}
                     onChange={(e) =>
                       setForm({
                         ...form,
