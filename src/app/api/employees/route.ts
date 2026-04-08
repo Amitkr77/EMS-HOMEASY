@@ -8,7 +8,7 @@ export async function GET() {
     await requireAdmin();
     await connectDB();
 
-    const employees = await Employee.find()
+    const employees = await Employee.find({ role: { $ne: "admin" } })
       .select("-password")
       .populate("department");
 

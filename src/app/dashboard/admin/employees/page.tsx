@@ -28,15 +28,6 @@ type FormState = {
   role: string;
 };
 
-const roles = [
-  "Technician",
-  "Installer",
-  "Support Agent",
-  "Smart Home Consultant",
-  "Manager",
-  "Admin",
-];
-
 export default function HomeasyTeamPage() {
   const [employees, setEmployees] = useState<Employee[]>([]);
   const [loading, setLoading] = useState(true);
@@ -456,23 +447,6 @@ export default function HomeasyTeamPage() {
 
                 <div>
                   <label className="block text-sm font-medium text-slate-700 mb-2">
-                    Role
-                  </label>
-                  <select
-                    className="w-full px-5 py-4 border border-slate-200 rounded-3xl focus:outline-none focus:border-teal-500"
-                    value={form.role}
-                    onChange={(e) => setForm({ ...form, role: e.target.value })}
-                  >
-                    {roles.map((r) => (
-                      <option key={r} value={r}>
-                        {r}
-                      </option>
-                    ))}
-                  </select>
-                </div>
-
-                <div>
-                  <label className="block text-sm font-medium text-slate-700 mb-2">
                     Password
                   </label>
                   <div className="relative">
@@ -568,23 +542,6 @@ export default function HomeasyTeamPage() {
                       setForm({ ...form, email: e.target.value })
                     }
                   />
-                </div>
-
-                <div>
-                  <label className="block text-sm font-medium text-slate-700 mb-2">
-                    Role
-                  </label>
-                  <select
-                    className="w-full px-5 py-4 border border-slate-200 rounded-3xl focus:outline-none focus:border-teal-500"
-                    value={form.role}
-                    onChange={(e) => setForm({ ...form, role: e.target.value })}
-                  >
-                    {roles.map((r) => (
-                      <option key={r} value={r}>
-                        {r}
-                      </option>
-                    ))}
-                  </select>
                 </div>
 
                 <div>
