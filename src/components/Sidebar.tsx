@@ -53,6 +53,11 @@ export default function HomeasySidebar() {
           label: "Send Notice",
           icon: <Bell className="w-5 h-5" />,
         },
+        {
+          href: "/dashboard/admin/tasks",
+          label: "Manage Tasks",
+          icon: <LayoutDashboard className="w-5 h-5" />,
+        },
       ]
     : [
         {
@@ -79,6 +84,11 @@ export default function HomeasySidebar() {
           href: "/dashboard/employee/notices",
           label: "Notices",
           icon: <Bell className="w-5 h-5" />,
+        },
+        {
+          href: "/dashboard/employee/tasks",
+          label: "My Tasks",
+          icon: <LayoutDashboard className="w-5 h-5" />,
         },
       ];
 
