@@ -28,7 +28,7 @@ const employeeSchema = new Schema(
 
     baseSalary: {
       type: Number,
-      required: true,
+      default: 0,
     },
 
     leaveBalance: {
@@ -44,8 +44,7 @@ const employeeSchema = new Schema(
       default: true,
     },
   },
-  { timestamps: true }
+  { timestamps: true },
 );
 
-export default models.Employee ||
-  mongoose.model("Employee", employeeSchema);
+export default models.Employee || mongoose.model("Employee", employeeSchema);
