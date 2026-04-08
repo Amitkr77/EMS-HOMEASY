@@ -6,7 +6,6 @@ import {
   EyeOff,
   Plus,
   Edit2,
-  Trash2,
   UserCheck,
   UserX,
 } from "lucide-react";
