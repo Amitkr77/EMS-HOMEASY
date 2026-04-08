@@ -10,8 +10,8 @@ export async function POST(req: Request) {
 
     const { imageBase64, latitude, longitude } = await req.json();
 
-    const today = new Date().toISOString().split("T")[0];
-
+    const today = new Date().toLocaleDateString("en-CA"); // YYYY-MM-DD
+    
     const existing = await Attendance.findOne({
       employeeId: session.user.id,
       date: today,
@@ -45,6 +45,7 @@ export async function POST(req: Request) {
 
     return Response.json(attendance);
   } catch (err: unknown) {
+    console.error("Check-in error:", err);
     if (err instanceof Error) {
       return Response.json({ error: err.message }, { status: 500 });
     }
