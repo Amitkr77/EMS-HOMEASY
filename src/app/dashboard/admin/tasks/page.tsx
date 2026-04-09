@@ -16,7 +16,7 @@ type Task = {
   title: string;
   description: string;
   priority: "high" | "medium" | "low";
-  dueDate: string;
+  date : string;
   status: string;
   assignedTo?: { name: string; email?: string };
   createdAt?: string;
@@ -29,7 +29,7 @@ export default function HomeasyAllTasks() {
 
   const fetchAllTasks = async () => {
     try {
-      const res = await fetch("/api/tasks/all"); // Make sure this API exists
+      const res = await fetch("/api/tasks/all"); 
       const data = await res.json();
       setTasks(data);
     } catch (error) {
@@ -232,7 +232,7 @@ export default function HomeasyAllTasks() {
                       <div className="text-sm text-slate-500 flex items-center gap-1">
                         <Clock className="w-4 h-4" />
                         Due:{" "}
-                        {new Date(task.dueDate).toLocaleDateString("en-IN", {
+                        {new Date(task.date).toLocaleDateString("en-IN", {
                           day: "numeric",
                           month: "short",
                         })}
