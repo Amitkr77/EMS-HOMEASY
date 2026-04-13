@@ -1,7 +1,16 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { User, Calendar, Send, Target, X, AlertTriangle, MinusCircle, ArrowDownCircle, RotateCcw } from "lucide-react";
+import {
+  User,
+  Calendar,
+  Send,
+  Target,
+  AlertTriangle,
+  MinusCircle,
+  ArrowDownCircle,
+  RotateCcw,
+} from "lucide-react";
 
 type FormState = {
   employeeId: string;
@@ -18,8 +27,15 @@ type FormErrors = {
   dueDate?: string;
 };
 
+type Employee = {
+  _id: string;
+  name: string;
+  email: string;
+  isActive?: boolean;
+};
+
 export default function HomeasyAssignTask() {
-  const [employees, setEmployees] = useState<any[]>([]);
+  const [employees, setEmployees] = useState<Employee[]>([]);
   const [loadingEmployees, setLoadingEmployees] = useState(true);
   const [form, setForm] = useState<FormState>({
     employeeId: "",
@@ -34,9 +50,30 @@ export default function HomeasyAssignTask() {
   const [errors, setErrors] = useState<FormErrors>({});
 
   const priorities = [
-    { value: "high", label: "High", desc: "Urgent", color: "border-red-200 bg-red-50 text-red-700", dot: "bg-red-500", icon: <AlertTriangle className="w-5 h-5" /> },
-    { value: "medium", label: "Medium", desc: "Standard", color: "border-amber-200 bg-amber-50 text-amber-700", dot: "bg-amber-500", icon: <MinusCircle className="w-5 h-5" /> },
-    { value: "low", label: "Low", desc: "Flexible", color: "border-emerald-200 bg-emerald-50 text-emerald-700", dot: "bg-emerald-500", icon: <ArrowDownCircle className="w-5 h-5" /> },
+    {
+      value: "high",
+      label: "High",
+      desc: "Urgent",
+      color: "border-red-200 bg-red-50 text-red-700",
+      dot: "bg-red-500",
+      icon: <AlertTriangle className="w-5 h-5" />,
+    },
+    {
+      value: "medium",
+      label: "Medium",
+      desc: "Standard",
+      color: "border-amber-200 bg-amber-50 text-amber-700",
+      dot: "bg-amber-500",
+      icon: <MinusCircle className="w-5 h-5" />,
+    },
+    {
+      value: "low",
+      label: "Low",
+      desc: "Flexible",
+      color: "border-emerald-200 bg-emerald-50 text-emerald-700",
+      dot: "bg-emerald-500",
+      icon: <ArrowDownCircle className="w-5 h-5" />,
+    },
   ];
 
   // ✅ Only fetch ACTIVE employees
@@ -45,8 +82,12 @@ export default function HomeasyAssignTask() {
       try {
         const res = await fetch("/api/employees");
         const data = await res.json();
-        // Filter out inactive employees so admin can't assign tasks to them
-        setEmployees(Array.isArray(data) ? data.filter((emp: any) => emp.isActive) : []);
+
+        setEmployees(
+          Array.isArray(data)
+            ? (data as Employee[]).filter((emp) => emp.isActive)
+            : [],
+        );
       } catch (err) {
         console.error("Failed to load employees", err);
       } finally {
@@ -61,9 +102,12 @@ export default function HomeasyAssignTask() {
     const newErrors: FormErrors = {};
     if (!form.employeeId) newErrors.employeeId = "Please select a team member";
     if (!form.title.trim()) newErrors.title = "Task title is required";
-    else if (form.title.length > 100) newErrors.title = "Title must be under 100 characters";
-    if (!form.description.trim()) newErrors.description = "Description is required";
-    else if (form.description.length > 1000) newErrors.description = "Description must be under 1000 characters";
+    else if (form.title.length > 100)
+      newErrors.title = "Title must be under 100 characters";
+    if (!form.description.trim())
+      newErrors.description = "Description is required";
+    else if (form.description.length > 1000)
+      newErrors.description = "Description must be under 1000 characters";
     if (!form.dueDate) newErrors.dueDate = "Due date is required";
 
     setErrors(newErrors);
@@ -102,7 +146,13 @@ export default function HomeasyAssignTask() {
   };
 
   const resetForm = () => {
-    setForm({ employeeId: "", title: "", description: "", priority: "medium", dueDate: "" });
+    setForm({
+      employeeId: "",
+      title: "",
+      description: "",
+      priority: "medium",
+      dueDate: "",
+    });
     setErrors({});
   };
 
@@ -137,7 +187,8 @@ export default function HomeasyAssignTask() {
               Task Assigned!
             </h3>
             <p className="text-emerald-600 mt-2 text-sm max-w-sm mx-auto">
-              The team member has been notified and will see this in their task dashboard.
+              The team member has been notified and will see this in their task
+              dashboard.
             </p>
             <button
               onClick={() => setSuccess(false)}
@@ -151,7 +202,6 @@ export default function HomeasyAssignTask() {
         {/* Main Form Card */}
         <div className="bg-white rounded-3xl shadow-sm border border-slate-100 p-8 md:p-10">
           <div className="space-y-7">
-            
             {/* Employee Selection */}
             <div>
               <label className="block text-sm font-semibold text-slate-700 mb-2">
@@ -161,25 +211,38 @@ export default function HomeasyAssignTask() {
                 <User className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 w-5 h-5" />
                 <select
                   className={`w-full pl-12 pr-6 py-3.5 border rounded-2xl focus:outline-none focus:ring-2 focus:ring-violet-500/20 focus:border-violet-500 transition-all bg-white text-sm appearance-none ${
-                    errors.employeeId ? "border-red-300 bg-red-50/30" : "border-slate-200"
+                    errors.employeeId
+                      ? "border-red-300 bg-red-50/30"
+                      : "border-slate-200"
                   }`}
                   value={form.employeeId}
                   onChange={(e) => {
                     setForm({ ...form, employeeId: e.target.value });
-                    if (errors.employeeId) setErrors({ ...errors, employeeId: undefined });
+                    if (errors.employeeId)
+                      setErrors({ ...errors, employeeId: undefined });
                   }}
                 >
                   <option value="">
-                    {loadingEmployees ? "Loading team..." : "Select Team Member"}
+                    {loadingEmployees
+                      ? "Loading team..."
+                      : "Select Team Member"}
                   </option>
                   {employees.map((emp) => (
-                    <option key={emp._id} value={emp._id} className="text-slate-900">
+                    <option
+                      key={emp._id}
+                      value={emp._id}
+                      className="text-slate-900"
+                    >
                       {emp.name} — {emp.email}
                     </option>
                   ))}
                 </select>
               </div>
-              {errors.employeeId && <p className="text-red-500 text-xs mt-1.5 ml-1">{errors.employeeId}</p>}
+              {errors.employeeId && (
+                <p className="text-red-500 text-xs mt-1.5 ml-1">
+                  {errors.employeeId}
+                </p>
+              )}
             </div>
 
             {/* Task Title */}
@@ -188,7 +251,9 @@ export default function HomeasyAssignTask() {
                 <label className="block text-sm font-semibold text-slate-700">
                   Task Title <span className="text-red-400">*</span>
                 </label>
-                <span className={`text-xs font-medium ${form.title.length > 100 ? 'text-red-500' : 'text-slate-400'}`}>
+                <span
+                  className={`text-xs font-medium ${form.title.length > 100 ? "text-red-500" : "text-slate-400"}`}
+                >
                   {form.title.length}/100
                 </span>
               </div>
@@ -197,7 +262,9 @@ export default function HomeasyAssignTask() {
                 maxLength={100}
                 placeholder="e.g., Complete smart home installation for Client XYZ"
                 className={`w-full px-5 py-3.5 border rounded-2xl focus:outline-none focus:ring-2 focus:ring-violet-500/20 focus:border-violet-500 transition-all text-sm ${
-                  errors.title ? "border-red-300 bg-red-50/30" : "border-slate-200"
+                  errors.title
+                    ? "border-red-300 bg-red-50/30"
+                    : "border-slate-200"
                 }`}
                 value={form.title}
                 onChange={(e) => {
@@ -205,7 +272,11 @@ export default function HomeasyAssignTask() {
                   if (errors.title) setErrors({ ...errors, title: undefined });
                 }}
               />
-              {errors.title && <p className="text-red-500 text-xs mt-1.5 ml-1">{errors.title}</p>}
+              {errors.title && (
+                <p className="text-red-500 text-xs mt-1.5 ml-1">
+                  {errors.title}
+                </p>
+              )}
             </div>
 
             {/* Description */}
@@ -214,7 +285,9 @@ export default function HomeasyAssignTask() {
                 <label className="block text-sm font-semibold text-slate-700">
                   Description <span className="text-red-400">*</span>
                 </label>
-                <span className={`text-xs font-medium ${form.description.length > 1000 ? 'text-red-500' : 'text-slate-400'}`}>
+                <span
+                  className={`text-xs font-medium ${form.description.length > 1000 ? "text-red-500" : "text-slate-400"}`}
+                >
                   {form.description.length}/1000
                 </span>
               </div>
@@ -222,15 +295,22 @@ export default function HomeasyAssignTask() {
                 maxLength={1000}
                 placeholder="Provide detailed instructions, requirements, and any specific links..."
                 className={`w-full h-36 px-5 py-4 border rounded-2xl focus:outline-none focus:ring-2 focus:ring-violet-500/20 focus:border-violet-500 transition-all resize-none text-sm leading-relaxed ${
-                  errors.description ? "border-red-300 bg-red-50/30" : "border-slate-200"
+                  errors.description
+                    ? "border-red-300 bg-red-50/30"
+                    : "border-slate-200"
                 }`}
                 value={form.description}
                 onChange={(e) => {
                   setForm({ ...form, description: e.target.value });
-                  if (errors.description) setErrors({ ...errors, description: undefined });
+                  if (errors.description)
+                    setErrors({ ...errors, description: undefined });
                 }}
               />
-              {errors.description && <p className="text-red-500 text-xs mt-1.5 ml-1">{errors.description}</p>}
+              {errors.description && (
+                <p className="text-red-500 text-xs mt-1.5 ml-1">
+                  {errors.description}
+                </p>
+              )}
             </div>
 
             {/* Priority & Due Date Grid */}
@@ -244,25 +324,38 @@ export default function HomeasyAssignTask() {
                     <button
                       key={p.value}
                       type="button"
-                      onClick={() => setForm({ ...form, priority: p.value as any })}
+                      onClick={() =>
+                        setForm({
+                          ...form,
+                          priority: p.value as FormState["priority"],
+                        })
+                      }
                       className={`w-full flex items-center gap-4 p-4 rounded-2xl border text-left transition-all ${
                         form.priority === p.value
                           ? `${p.color} border-current shadow-sm`
                           : "border-slate-200 hover:border-slate-300 bg-white"
                       }`}
                     >
-                      <div className={`text-current ${form.priority !== p.value ? 'text-slate-400' : ''}`}>
+                      <div
+                        className={`text-current ${form.priority !== p.value ? "text-slate-400" : ""}`}
+                      >
                         {p.icon}
                       </div>
                       <div>
-                        <p className={`font-semibold text-sm ${form.priority === p.value ? 'text-current' : 'text-slate-700'}`}>
+                        <p
+                          className={`font-semibold text-sm ${form.priority === p.value ? "text-current" : "text-slate-700"}`}
+                        >
                           {p.label}
                         </p>
-                        <p className={`text-xs ${form.priority === p.value ? 'text-current opacity-70' : 'text-slate-500'}`}>
+                        <p
+                          className={`text-xs ${form.priority === p.value ? "text-current opacity-70" : "text-slate-500"}`}
+                        >
                           {p.desc}
                         </p>
                       </div>
-                      <div className={`ml-auto w-3 h-3 rounded-full ${form.priority === p.value ? p.dot : 'bg-slate-200'}`} />
+                      <div
+                        className={`ml-auto w-3 h-3 rounded-full ${form.priority === p.value ? p.dot : "bg-slate-200"}`}
+                      />
                     </button>
                   ))}
                 </div>
@@ -278,34 +371,52 @@ export default function HomeasyAssignTask() {
                     type="date"
                     min={todayStr} // ✅ Prevent past dates
                     className={`w-full pl-12 pr-6 py-3.5 border rounded-2xl focus:outline-none focus:ring-2 focus:ring-violet-500/20 focus:border-violet-500 transition-all text-sm ${
-                      errors.dueDate ? "border-red-300 bg-red-50/30" : "border-slate-200"
+                      errors.dueDate
+                        ? "border-red-300 bg-red-50/30"
+                        : "border-slate-200"
                     }`}
                     value={form.dueDate}
                     onChange={(e) => {
                       setForm({ ...form, dueDate: e.target.value });
-                      if (errors.dueDate) setErrors({ ...errors, dueDate: undefined });
+                      if (errors.dueDate)
+                        setErrors({ ...errors, dueDate: undefined });
                     }}
                   />
                 </div>
-                {errors.dueDate && <p className="text-red-500 text-xs mt-1.5 ml-1">{errors.dueDate}</p>}
-                
+                {errors.dueDate && (
+                  <p className="text-red-500 text-xs mt-1.5 ml-1">
+                    {errors.dueDate}
+                  </p>
+                )}
+
                 <div className="mt-8 p-5 bg-slate-50 rounded-2xl border border-slate-100">
-                  <p className="text-xs font-semibold text-slate-500 uppercase tracking-wide mb-2">Task Summary</p>
+                  <p className="text-xs font-semibold text-slate-500 uppercase tracking-wide mb-2">
+                    Task Summary
+                  </p>
                   <div className="space-y-2 text-sm text-slate-600">
                     <div className="flex justify-between">
                       <span>Assignee:</span>
                       <span className="font-medium text-slate-900 truncate ml-4">
-                        {employees.find(e => e._id === form.employeeId)?.name || 'Not selected'}
+                        {employees.find((e) => e._id === form.employeeId)
+                          ?.name || "Not selected"}
                       </span>
                     </div>
                     <div className="flex justify-between">
                       <span>Priority:</span>
-                      <span className="font-medium capitalize text-slate-900">{form.priority}</span>
+                      <span className="font-medium capitalize text-slate-900">
+                        {form.priority}
+                      </span>
                     </div>
                     <div className="flex justify-between">
                       <span>Due by:</span>
                       <span className="font-medium text-slate-900">
-                        {form.dueDate ? new Date(form.dueDate).toLocaleDateString("en-IN", { day: "numeric", month: "short", year: "numeric" }) : 'Not set'}
+                        {form.dueDate
+                          ? new Date(form.dueDate).toLocaleDateString("en-IN", {
+                              day: "numeric",
+                              month: "short",
+                              year: "numeric",
+                            })
+                          : "Not set"}
                       </span>
                     </div>
                   </div>
@@ -325,7 +436,7 @@ export default function HomeasyAssignTask() {
               <RotateCcw className="w-4 h-4" />
               Clear Form
             </button>
-            
+
             <button
               type="button"
               onClick={handleSubmit}

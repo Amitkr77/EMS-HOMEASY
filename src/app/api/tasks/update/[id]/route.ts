@@ -5,7 +5,7 @@ import { authOptions } from "@/lib/authOption";
 
 export async function PUT(
   req: Request,
-  { params }: { params: { id: string } }
+  { params }: { params: { id: string } },
 ) {
   try {
     const session = await getServerSession(authOptions);
@@ -19,11 +19,15 @@ export async function PUT(
     const updated = await Task.findByIdAndUpdate(
       params.id,
       { status: "completed" },
-      { new: true }
+      { new: true },
     );
 
     return Response.json(updated);
-  } catch (err: any) {
-    return Response.json({ error: err.message }, { status: 500 });
+  } catch (err: unknown) {
+    if (err instanceof Error) {
+      return Response.json({ error: err.message }, { status: 500 });
+    }
+
+    return Response.json({ error: "Something went wrong" }, { status: 500 });
   }
 }

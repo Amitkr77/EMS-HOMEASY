@@ -43,6 +43,7 @@ export default function HomeasyTodayTasks() {
       });
       fetchTodayTasks();
     } catch (error) {
+      console.error("Failed to mark task as complete", error);
       alert("Failed to mark task as complete");
     } finally {
       setCompletingId(null);

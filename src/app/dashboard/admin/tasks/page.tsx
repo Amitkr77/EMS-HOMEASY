@@ -12,7 +12,6 @@ import {
   PlayCircle,
   RotateCcw,
   AlertTriangle,
-  UserCircle,
   Filter,
 } from "lucide-react";
 import Link from "next/link";
@@ -31,7 +30,7 @@ type Task = {
 export default function HomeasyAllTasks() {
   const [tasks, setTasks] = useState<Task[]>([]);
   const [loading, setLoading] = useState(true);
-  
+
   // ✅ Enhanced States
   const [searchQuery, setSearchQuery] = useState("");
   const [statusFilter, setStatusFilter] = useState<string>("all");
@@ -62,6 +61,7 @@ export default function HomeasyAllTasks() {
       });
       fetchAllTasks();
     } catch (error) {
+      console.error("Task status update failed:", error);
       alert("Failed to update task status");
     }
   };
@@ -69,24 +69,49 @@ export default function HomeasyAllTasks() {
   const getPriorityConfig = (priority: string) => {
     switch (priority) {
       case "high":
-        return { color: "bg-red-50 text-red-600 border border-red-100", icon: <Flag className="w-3.5 h-3.5" />, label: "High" };
+        return {
+          color: "bg-red-50 text-red-600 border border-red-100",
+          icon: <Flag className="w-3.5 h-3.5" />,
+          label: "High",
+        };
       case "medium":
-        return { color: "bg-amber-50 text-amber-600 border border-amber-100", icon: <AlertCircle className="w-3.5 h-3.5" />, label: "Medium" };
+        return {
+          color: "bg-amber-50 text-amber-600 border border-amber-100",
+          icon: <AlertCircle className="w-3.5 h-3.5" />,
+          label: "Medium",
+        };
       case "low":
-        return { color: "bg-emerald-50 text-emerald-600 border border-emerald-100", icon: <CheckCircle className="w-3.5 h-3.5" />, label: "Low" };
+        return {
+          color: "bg-emerald-50 text-emerald-600 border border-emerald-100",
+          icon: <CheckCircle className="w-3.5 h-3.5" />,
+          label: "Low",
+        };
       default:
-        return { color: "bg-slate-50 text-slate-600 border border-slate-100", icon: null, label: priority };
+        return {
+          color: "bg-slate-50 text-slate-600 border border-slate-100",
+          icon: null,
+          label: priority,
+        };
     }
   };
 
   const getStatusConfig = (status: string) => {
     switch (status) {
       case "in-progress":
-        return { color: "bg-blue-50 text-blue-600 border border-blue-100", label: "In Progress" };
+        return {
+          color: "bg-blue-50 text-blue-600 border border-blue-100",
+          label: "In Progress",
+        };
       case "completed":
-        return { color: "bg-emerald-50 text-emerald-600 border border-emerald-100", label: "Completed" };
+        return {
+          color: "bg-emerald-50 text-emerald-600 border border-emerald-100",
+          label: "Completed",
+        };
       default:
-        return { color: "bg-slate-50 text-slate-500 border border-slate-100", label: "Pending" };
+        return {
+          color: "bg-slate-50 text-slate-500 border border-slate-100",
+          label: "Pending",
+        };
     }
   };
 
@@ -105,7 +130,8 @@ export default function HomeasyAllTasks() {
       // Status
       if (statusFilter !== "all" && task.status !== statusFilter) return false;
       // Priority
-      if (priorityFilter !== "all" && task.priority !== priorityFilter) return false;
+      if (priorityFilter !== "all" && task.priority !== priorityFilter)
+        return false;
 
       return true;
     });
@@ -119,8 +145,12 @@ export default function HomeasyAllTasks() {
       pending: tasks.filter((t) => t.status === "pending").length,
       inProgress: tasks.filter((t) => t.status === "in-progress").length,
       completed: tasks.filter((t) => t.status === "completed").length,
-      highPriority: tasks.filter((t) => t.priority === "high" && t.status !== "completed").length,
-      overdue: tasks.filter((t) => t.status !== "completed" && new Date(t.date) < today).length,
+      highPriority: tasks.filter(
+        (t) => t.priority === "high" && t.status !== "completed",
+      ).length,
+      overdue: tasks.filter(
+        (t) => t.status !== "completed" && new Date(t.date) < today,
+      ).length,
     };
   }, [tasks]);
 
@@ -145,7 +175,7 @@ export default function HomeasyAllTasks() {
               </p>
             </div>
           </div>
-          
+
           <Link
             href="/dashboard/admin/tasks/assign"
             className="flex items-center gap-3 bg-violet-600 hover:bg-violet-700 text-white font-semibold px-8 py-4 rounded-2xl transition-all shadow-lg shadow-violet-600/20 w-fit"
@@ -158,20 +188,62 @@ export default function HomeasyAllTasks() {
         {/* Summary Stats */}
         <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4 mb-10">
           {[
-            { label: "TOTAL", value: stats.total, color: "text-slate-900", bg: "bg-indigo-50", iconBg: "bg-indigo-100", icon: <Target className="w-5 h-5 text-indigo-600" /> },
-            { label: "PENDING", value: stats.pending, color: "text-slate-900", bg: "bg-amber-50", iconBg: "bg-amber-100", icon: <Clock className="w-5 h-5 text-amber-600" /> },
-            { label: "IN PROGRESS", value: stats.inProgress, color: "text-slate-900", bg: "bg-blue-50", iconBg: "bg-blue-100", icon: <PlayCircle className="w-5 h-5 text-blue-600" /> },
-            { label: "COMPLETED", value: stats.completed, color: "text-emerald-600", bg: "bg-emerald-50", iconBg: "bg-emerald-100", icon: <CheckCircle className="w-5 h-5 text-emerald-600" /> },
-            { label: "OVERDUE", value: stats.overdue, color: "text-red-600", bg: "bg-red-50", iconBg: "bg-red-100", icon: <AlertTriangle className="w-5 h-5 text-red-500" /> },
+            {
+              label: "TOTAL",
+              value: stats.total,
+              color: "text-slate-900",
+              bg: "bg-indigo-50",
+              iconBg: "bg-indigo-100",
+              icon: <Target className="w-5 h-5 text-indigo-600" />,
+            },
+            {
+              label: "PENDING",
+              value: stats.pending,
+              color: "text-slate-900",
+              bg: "bg-amber-50",
+              iconBg: "bg-amber-100",
+              icon: <Clock className="w-5 h-5 text-amber-600" />,
+            },
+            {
+              label: "IN PROGRESS",
+              value: stats.inProgress,
+              color: "text-slate-900",
+              bg: "bg-blue-50",
+              iconBg: "bg-blue-100",
+              icon: <PlayCircle className="w-5 h-5 text-blue-600" />,
+            },
+            {
+              label: "COMPLETED",
+              value: stats.completed,
+              color: "text-emerald-600",
+              bg: "bg-emerald-50",
+              iconBg: "bg-emerald-100",
+              icon: <CheckCircle className="w-5 h-5 text-emerald-600" />,
+            },
+            {
+              label: "OVERDUE",
+              value: stats.overdue,
+              color: "text-red-600",
+              bg: "bg-red-50",
+              iconBg: "bg-red-100",
+              icon: <AlertTriangle className="w-5 h-5 text-red-500" />,
+            },
           ].map((stat) => (
-            <div key={stat.label} className={`${stat.bg} rounded-2xl p-5 border border-transparent`}>
+            <div
+              key={stat.label}
+              className={`${stat.bg} rounded-2xl p-5 border border-transparent`}
+            >
               <div className="flex items-center justify-between mb-3">
-                <div className={`w-10 h-10 ${stat.iconBg} rounded-xl flex items-center justify-center`}>
+                <div
+                  className={`w-10 h-10 ${stat.iconBg} rounded-xl flex items-center justify-center`}
+                >
                   {stat.icon}
                 </div>
               </div>
               <p className={`text-3xl font-bold ${stat.color}`}>{stat.value}</p>
-              <p className="text-xs text-slate-500 mt-1 font-medium tracking-wide">{stat.label}</p>
+              <p className="text-xs text-slate-500 mt-1 font-medium tracking-wide">
+                {stat.label}
+              </p>
             </div>
           ))}
         </div>
@@ -199,7 +271,10 @@ export default function HomeasyAllTasks() {
               >
                 {statusOptions.map((s) => (
                   <option key={s} value={s}>
-                    {s === "all" ? "All Statuses" : s.charAt(0).toUpperCase() + s.slice(1).replace("-", " ")}
+                    {s === "all"
+                      ? "All Statuses"
+                      : s.charAt(0).toUpperCase() +
+                        s.slice(1).replace("-", " ")}
                   </option>
                 ))}
               </select>
@@ -215,7 +290,9 @@ export default function HomeasyAllTasks() {
               >
                 <option value="all">All Priorities</option>
                 {uniquePriorities.map((p) => (
-                  <option key={p} value={p}>{p.charAt(0).toUpperCase() + p.slice(1)}</option>
+                  <option key={p} value={p}>
+                    {p.charAt(0).toUpperCase() + p.slice(1)}
+                  </option>
                 ))}
               </select>
               <Flag className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 w-4 h-4 pointer-events-none" />
@@ -227,7 +304,10 @@ export default function HomeasyAllTasks() {
         {loading ? (
           <div className="space-y-4">
             {[...Array(3)].map((_, i) => (
-              <div key={i} className="h-40 bg-white rounded-2xl animate-pulse border border-slate-100" />
+              <div
+                key={i}
+                className="h-40 bg-white rounded-2xl animate-pulse border border-slate-100"
+              />
             ))}
           </div>
         ) : filteredTasks.length === 0 ? (
@@ -235,7 +315,9 @@ export default function HomeasyAllTasks() {
             <div className="mx-auto w-20 h-20 bg-slate-50 rounded-full flex items-center justify-center mb-6 text-4xl">
               📋
             </div>
-            <h3 className="text-xl font-semibold text-slate-700">No tasks found</h3>
+            <h3 className="text-xl font-semibold text-slate-700">
+              No tasks found
+            </h3>
             <p className="text-slate-500 mt-2 text-sm">
               {searchQuery || statusFilter !== "all" || priorityFilter !== "all"
                 ? "Try adjusting your search or filters."
@@ -248,32 +330,37 @@ export default function HomeasyAllTasks() {
               const priorityConfig = getPriorityConfig(task.priority);
               const statusConfig = getStatusConfig(task.status);
               const isCompleted = task.status === "completed";
-              
+
               // ✅ Overdue Logic
-              const isOverdue = !isCompleted && new Date(task.date) < new Date(new Date().toDateString());
+              const isOverdue =
+                !isCompleted &&
+                new Date(task.date) < new Date(new Date().toDateString());
 
               return (
                 <div
                   key={task._id}
                   className={`bg-white rounded-2xl border transition-all group hover:shadow-md ${
-                    isCompleted 
-                      ? "border-slate-100 opacity-75" 
-                      : isOverdue 
-                        ? "border-red-200 shadow-sm shadow-red-50" 
+                    isCompleted
+                      ? "border-slate-100 opacity-75"
+                      : isOverdue
+                        ? "border-red-200 shadow-sm shadow-red-50"
                         : "border-slate-100 shadow-sm"
                   }`}
                 >
                   <div className="p-6 md:p-8 flex flex-col md:flex-row md:items-start gap-6">
-                    
                     {/* Left Content */}
                     <div className="flex-1 min-w-0">
                       {/* Tags */}
                       <div className="flex flex-wrap items-center gap-2 mb-4">
-                        <div className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-lg text-xs font-semibold ${priorityConfig.color}`}>
+                        <div
+                          className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-lg text-xs font-semibold ${priorityConfig.color}`}
+                        >
                           {priorityConfig.icon}
                           {priorityConfig.label}
                         </div>
-                        <div className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-lg text-xs font-semibold ${statusConfig.color}`}>
+                        <div
+                          className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-lg text-xs font-semibold ${statusConfig.color}`}
+                        >
                           {statusConfig.label}
                         </div>
                         {isOverdue && (
@@ -285,7 +372,9 @@ export default function HomeasyAllTasks() {
                       </div>
 
                       {/* Title & Description */}
-                      <h2 className={`text-xl font-semibold leading-snug ${isCompleted ? "line-through text-slate-400" : "text-slate-900"}`}>
+                      <h2
+                        className={`text-xl font-semibold leading-snug ${isCompleted ? "line-through text-slate-400" : "text-slate-900"}`}
+                      >
                         {task.title}
                       </h2>
                       <p className="mt-2 text-sm text-slate-500 leading-relaxed line-clamp-2">
@@ -307,9 +396,10 @@ export default function HomeasyAllTasks() {
 
                     {/* Right Sidebar (Meta & Actions) */}
                     <div className="flex flex-row md:flex-col items-center md:items-end gap-4 md:gap-3 md:min-w-[160px] flex-shrink-0">
-                      
                       {/* Due Date */}
-                      <div className={`flex items-center gap-2 text-sm font-medium px-3 py-1.5 rounded-lg ${isOverdue ? "text-red-500 bg-red-50" : "text-slate-500 bg-slate-50"}`}>
+                      <div
+                        className={`flex items-center gap-2 text-sm font-medium px-3 py-1.5 rounded-lg ${isOverdue ? "text-red-500 bg-red-50" : "text-slate-500 bg-slate-50"}`}
+                      >
                         <Clock className="w-4 h-4" />
                         {new Date(task.date).toLocaleDateString("en-IN", {
                           day: "numeric",
@@ -321,17 +411,21 @@ export default function HomeasyAllTasks() {
                       <div className="flex gap-2">
                         {task.status === "pending" && (
                           <button
-                            onClick={() => updateTaskStatus(task._id, "in-progress")}
+                            onClick={() =>
+                              updateTaskStatus(task._id, "in-progress")
+                            }
                             className="px-5 py-2.5 bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium rounded-xl transition-all flex items-center gap-2 shadow-sm"
                           >
                             <PlayCircle className="w-4 h-4" />
                             <span className="hidden sm:inline">Start</span>
                           </button>
                         )}
-                        
+
                         {task.status === "in-progress" && (
                           <button
-                            onClick={() => updateTaskStatus(task._id, "completed")}
+                            onClick={() =>
+                              updateTaskStatus(task._id, "completed")
+                            }
                             className="px-5 py-2.5 bg-emerald-600 hover:bg-emerald-700 text-white text-sm font-medium rounded-xl transition-all flex items-center gap-2 shadow-sm"
                           >
                             <CheckCircle className="w-4 h-4" />
@@ -341,7 +435,9 @@ export default function HomeasyAllTasks() {
 
                         {isCompleted && (
                           <button
-                            onClick={() => updateTaskStatus(task._id, "pending")}
+                            onClick={() =>
+                              updateTaskStatus(task._id, "pending")
+                            }
                             className="px-5 py-2.5 bg-slate-100 hover:bg-slate-200 text-slate-600 text-sm font-medium rounded-xl transition-all flex items-center gap-2"
                           >
                             <RotateCcw className="w-4 h-4" />

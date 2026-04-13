@@ -1,11 +1,10 @@
 import { connectDB } from "@/lib/db";
 import Employee from "@/models/Employee";
 import Attendance from "@/models/Attendance";
-import Leave from "@/models/Leave"; // if you have leave model
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/authOption";
 
-export async function GET(req: Request) {
+export async function GET() {
   try {
     const session = await getServerSession(authOptions);
 
@@ -30,7 +29,7 @@ export async function GET(req: Request) {
     const todayAttendance = await Attendance.find({ date: today });
 
     const presentToday = todayAttendance.filter(
-      (a) => a.status === "present"
+      (a) => a.status === "present",
     ).length;
 
     const absentToday = totalEmployees - presentToday;
@@ -56,7 +55,7 @@ export async function GET(req: Request) {
         : Math.round(
             (last30Days.filter((a) => a.status === "present").length /
               (totalEmployees * 30)) *
-              100
+              100,
           );
 
     // =============================
@@ -108,10 +107,7 @@ export async function GET(req: Request) {
       return Response.json({ error: err.message }, { status: 500 });
     }
 
-    return Response.json(
-      { error: "Something went wrong" },
-      { status: 500 }
-    );
+    return Response.json({ error: "Something went wrong" }, { status: 500 });
   }
 }
 

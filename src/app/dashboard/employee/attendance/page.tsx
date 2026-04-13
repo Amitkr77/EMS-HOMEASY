@@ -3,7 +3,6 @@
 import { useRef, useState } from "react";
 import {
   Camera,
-  MapPin,
   CheckCircle,
   LogOut,
   X,
@@ -83,6 +82,7 @@ export default function MarkAttendance() {
         latitude = pos.coords.latitude;
         longitude = pos.coords.longitude;
       } catch (geoError) {
+        console.error("Failed to get location", geoError);
         throw new Error("Location access denied. Please enable GPS/Location services.");
       } finally {
         setFetchingLocation(false);

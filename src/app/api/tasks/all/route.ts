@@ -16,7 +16,8 @@ export async function GET(req: Request) {
     const { searchParams } = new URL(req.url);
     const date = searchParams.get("date");
 
-    let filter: any = {};
+    // ✅ typed filter instead of any
+    const filter: Record<string, unknown> = {};
 
     if (date) {
       filter.date = date;
@@ -27,7 +28,14 @@ export async function GET(req: Request) {
       .sort({ createdAt: -1 });
 
     return Response.json(tasks);
-  } catch (err: any) {
-    return Response.json({ error: err.message }, { status: 500 });
+  } catch (err: unknown) {
+    if (err instanceof Error) {
+      return Response.json({ error: err.message }, { status: 500 });
+    }
+
+    return Response.json(
+      { error: "Something went wrong" },
+      { status: 500 }
+    );
   }
 }

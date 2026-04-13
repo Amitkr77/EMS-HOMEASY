@@ -12,12 +12,23 @@ type Employee = {
   email: string;
 };
 
+type Message = {
+  senderId: string;
+  receiverId: string;
+  message: string;
+  timestamp: string | Date;
+};
+
 export default function HomeasyChat() {
-  const [messages, setMessages] = useState<any[]>([]);
+  const [messages, setMessages] = useState<Message[]>([]);
+  const [employees, setEmployees] = useState<Employee[]>([]);
   const [text, setText] = useState("");
   const [receiverId, setReceiverId] = useState("");
-  const [employees, setEmployees] = useState<any[]>([]);
   const [currentUserId, setCurrentUserId] = useState<string>("");
+
+  const handleSelectUser = (id: string) => {
+    setReceiverId(id);
+  };
 
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
@@ -30,17 +41,17 @@ export default function HomeasyChat() {
     scrollToBottom();
   }, [messages]);
 
-  // Fetch employees for selection
-  const [loading, setLoading] = useState<boolean>(true);
-  const [error, setError] = useState<string | null>(null);
+  useEffect(() => {
+    if (employees.length > 0) {
+      setCurrentUserId(employees[0]._id); // or logged-in user
+    }
+  }, [employees]);
 
   useEffect(() => {
     const controller = new AbortController();
 
     const fetchEmployees = async (): Promise<void> => {
       try {
-        setLoading(true);
-
         const res = await fetch("/api/employees", {
           signal: controller.signal,
         });
@@ -53,10 +64,8 @@ export default function HomeasyChat() {
         setEmployees(data);
       } catch (err: unknown) {
         if (err instanceof Error && err.name !== "AbortError") {
-          setError(err.message);
+          console.error(err.message);
         }
-      } finally {
-        setLoading(false);
       }
     };
 
@@ -67,7 +76,7 @@ export default function HomeasyChat() {
 
   // Socket listener
   useEffect(() => {
-    socket.on("receive-message", (data) => {
+    socket.on("receive-message", (data: Message) => {
       setMessages((prev) => [...prev, data]);
     });
 
@@ -80,7 +89,7 @@ export default function HomeasyChat() {
     if (!text.trim() || !receiverId) return;
 
     const msg = {
-      senderId: currentUserId, 
+      senderId: currentUserId,
       receiverId,
       message: text.trim(),
       timestamp: new Date(),
@@ -135,7 +144,7 @@ export default function HomeasyChat() {
               {employees?.map((emp) => (
                 <div
                   key={emp._id}
-                  onClick={() => setReceiverId(emp._id)}
+                  onClick={() => handleSelectUser(emp._id)}
                   className={`p-4 rounded-2xl cursor-pointer transition-all flex items-center gap-3 ${
                     receiverId === emp._id
                       ? "bg-teal-50 border border-teal-200"

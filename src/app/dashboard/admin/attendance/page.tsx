@@ -4,7 +4,6 @@ import { Download, Search, Calendar, Users, Clock, Award, X, ZoomIn } from "luci
 
 interface AttendanceRecord {
   _id: string;
-  // Mongoose populate might return an object, or just a string ID if it fails
   employeeId: {
     name: string;
     email: string;
@@ -105,7 +104,7 @@ export default function AdminAttendance() {
 
   // Summary calculations based on CALCULATED hours
   const summary = useMemo(() => {
-    let total = filteredData.length;
+    const total = filteredData.length;
     let present = 0;
     let halfDay = 0;
     let absent = 0;
