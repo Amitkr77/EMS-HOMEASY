@@ -84,6 +84,16 @@ export default function HomeasySidebar() {
             },
           ],
         },
+        {
+          title: "CONTENT",
+          items: [
+            {
+              href: "/dashboard/admin/blog",
+              label: "Blog post",
+              icon: <Megaphone className="w-5 h-5" />,
+            },
+          ],
+        },
       ]
     : [
         {
